@@ -25,8 +25,8 @@
             var marker = L.marker(
               ["{{ wreck.latitude }}", "{{ wreck.longitude }}"]
               ).addTo(map);
-            marker.bindPopup(
-              "<a href={{ wreck.wreckhunter_link }} target=\"_blank\" rel=\"noopener noreferrer\" >{{ wreck.vessel_name }} ({{ wreck.year }})</a>");
+            var link = "{% if wreck.wreckhunter_link %}<a href={{ wreck.wreckhunter_link }} target=\"_blank\" rel=\"noopener noreferrer\" >{{ wreck.vessel_name }} {% if wreck.year > 0 %}({{ wreck.year }}){% endif %}</a>{% else %}{{ wreck.vessel_name }} {% if wreck.year > 0 %}({{ wreck.year }}){% endif %}{% endif %}";
+            marker.bindPopup(link);
           </script>
       {% endfor %}
   {% else %}
