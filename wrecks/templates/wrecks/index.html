@@ -10,20 +10,26 @@
 <body>
   <div id="map" style="height: 100%; width: 100%;"></div>
   <script>
-    const map = L.map('map').setView([41.47, -71.35], 12);
-    L.tileLayer(
+    var ocean_base = L.tileLayer(
       'https://server.arcgisonline.com/ArcGIS/rest/services/Ocean_Basemap/MapServer/tile/{z}/{y}/{x}',
       {
 	      attribution: 'Tiles &copy; Esri &mdash; Sources: GEBCO, NOAA, CHS, OSU,   UNH, CSUMB, National Geographic, DeLorme, NAVTEQ, and Esri',
 	      maxZoom: 13
-      }).addTo(map);
-    L.tileLayer.wms(
+      });
+    var noaa_enc = L.tileLayer.wms(
       "https://gis.charttools.noaa.gov/arcgis/rest/services/MCS/NOAAChartDisplay/MapServer/exts/MaritimeChartService/WMSServer",
       {
         layer: ['0', '1', '2', '3', '4', '5', '6', '10'],
         maxZoom: 19,
         attribution: 'NOAA'
-      }).addTo(map);
+      });
+    const map = L.map(
+      'map',
+      {'center': [41.47, -71.35],
+       'zoom':  12,
+       'layers': [ocean_base, noaa_enc]});
+    var layerControl = L.control.layers(
+      {"ESRI Ocean Base" : ocean_base, "NOAA ENC": noaa_enc}, {}).addTo(map);
   </script>
   {% if wrecks_list %}
       {% for wreck in wrecks_list %}
