@@ -10,3 +10,6 @@ class Wreck(models.Model):
   longitude= models.FloatField()
   year = models.IntegerField(default=None)
   wreckhunter_link = models.URLField(default='')
+
+  def __str__(self):
+    return self.vessel_name
