@@ -1,0 +1,4 @@
+__pycache__/*
+wrecks/__pycache__/*
+*.pyc
+*.secret
