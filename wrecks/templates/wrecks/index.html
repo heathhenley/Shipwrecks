@@ -37,8 +37,28 @@
             var marker = L.marker(
               ["{{ wreck.latitude }}", "{{ wreck.longitude }}"]
               ).addTo(map);
-            var link = "{% if wreck.wreckhunter_link %}<a href={{ wreck.wreckhunter_link }} target=\"_blank\" rel=\"noopener noreferrer\" >{{ wreck.vessel_name }} {% if wreck.year > 0 %}({{ wreck.year }}){% endif %}</a>{% else %}{{ wreck.vessel_name }} {% if wreck.year > 0 %}({{ wreck.year }}){% endif %}{% endif %}";
-            marker.bindPopup(link);
+            var wh_link = "{% if wreck.wreckhunter_link %}<a href={{ wreck.wreckhunter_link }} target=\"_blank\" rel=\"noopener noreferrer\" >Datasheet</a>{% else %}{% endif %}";
+            var bl_link = "{% if wreck.beavertail_link %}<a href={{ wreck.beavertail_link }} target=\"_blank\" rel=\"noopener noreferrer\" >Datasheet</a>{% else %}{% endif %}";
+            var name = "<strong>{{ wreck.vessel_name }}</strong>";
+            var year =  "{% if wreck.year > 0 %}{{wreck.year}}{%endif%}";
+            var msg_box = name;
+            if (year !== "") {
+              msg_box += "<br>Year Lost: " + year + "</br>";
+            }
+            if (wh_link.length > 0 || bl_link.length > 0) {
+              msg_box += "<br>There is more information available at the following resources. Note: all data at the following links is from external sources, please refer to the linked sources for usage or reproduction constraints.</br>";
+              msg_box += "<ul>";
+              if (wh_link.length > 0) {
+                msg_box += "<li>Wreck Hunter (<a href='http://wreckhunter.net/' target=\"_blank\" rel=\"noopener noreferrer\">Website</a>, " + wh_link + ")</li>"; 
+              }
+              if (bl_link.length > 0) {
+                msg_box += "<li>Beavertail Lighthouse Museum (<a href='https://beavertaillight.org/wrecks/' target=\"_blank\" rel=\"noopener noreferrer\">Website</a>, " + bl_link + ")</li>";
+              }
+              msg_box += "</ul>";
+            } else {
+              msg_box += "<br>There are no datasheets or references available for this wreck...yet :) .</br>"
+            }
+            marker.bindPopup(msg_box);
           </script>
       {% endfor %}
   {% else %}
