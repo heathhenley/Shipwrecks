@@ -17,3 +17,6 @@ To contribute to development:
 - run `python manage.py runserver' to start the project locally
 - make your changes and submit a PR
 *Note: please do not submit PRs for changes to the database data*
+
+## Future Plans / TODO 
+There is a running list of TODO ideas here: https://github.com/heathhenley/Shipwrecks/issues/1 
