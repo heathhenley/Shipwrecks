@@ -11,8 +11,9 @@ The app is currently a simple [Django](https://www.djangoproject.com/) app, the 
 If you have a suggestion or bug report, please create an issue: https://github.com/heathhenley/Shipwrecks/issues/new 
 
 To contribute to development:
-- clone this project locally
-- (probably in a virtual environement) install the requirements: `pip install -r requirements.txt' 
+- clone this project's repo locally
+- change to the ShipWrecks directory
+- (probably in a [virtual environment](https://docs.python.org/3/tutorial/venv.html)) install the requirements: `pip install -r requirements.txt` 
 - run `python manage.py runserver' to start the project locally
 - make your changes and submit a PR
 *Note: please do not submit PRs for changes to the database data*
