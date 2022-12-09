@@ -37,6 +37,13 @@
     var fs_overlay_color = L.imageOverlay(imageUrl_color, imageBounds);
     var fs_overlay_relief = L.imageOverlay(imageUrl_hs, imageBounds);
     var fs_layer = L.layerGroup([fs_overlay_relief, fs_overlay_color]);
+    // NOAA Sonar Data BAG shaded relief
+    var noaa_bag = L.tileLayer(
+      "https://tiles.arcgis.com/tiles/C8EMgrsFcRFL6LrL/arcgis/rest/services/bag_hillshades/MapServer/WMTS/tile/1.0.0/bag_hillshades/default/default028mm/{z}/{y}/{x}",
+      {
+        maxZoom: 16,
+        attribution: 'NOAA NCEI'
+      });
     // The map!
     const map = L.map(
       'map',
@@ -45,8 +52,13 @@
        'layers': [ocean_base]});
     // Legend and entries
     var layerControl = L.control.layers(
-      {"ESRI Ocean Base" : ocean_base, "NOAA Nautical Chart": noaa_enc}, // basemaps
-      {"<a href='https://www.farsounder.com' >FarSounder</a> FLS Gridded Bathymetry" : fs_layer}, // overlays
+      // base maps
+      {"ESRI Ocean Base" : ocean_base,
+       "NOAA Nautical Chart": noaa_enc},
+      // overlays
+      {"<a href='https://www.farsounder.com' >FarSounder</a> FLS Gridded Bathymetry" : fs_layer,
+      "<a href='https://www.ncei.noaa.gov/maps/bathymetry/'>NOAA</a> Shaded Bathymetry BAG" : noaa_bag},
+      // options
       {"collapsed": false}).addTo(map);
   </script>
   <!--
