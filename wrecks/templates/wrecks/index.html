@@ -1,3 +1,4 @@
+{% load static %}
 <head>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.2/dist/leaflet.css"
      integrity="sha256-sA+zWATbFveLLNqWO2gtiw3HL/lh1giY/Inf1BJ0z14="
@@ -14,7 +15,7 @@
       'https://server.arcgisonline.com/ArcGIS/rest/services/Ocean_Basemap/MapServer/tile/{z}/{y}/{x}',
       {
 	      attribution: 'Tiles &copy; Esri &mdash; Sources: GEBCO, NOAA, CHS, OSU,   UNH, CSUMB, National Geographic, DeLorme, NAVTEQ, and Esri',
-	      maxZoom: 13
+	      maxZoom: 16
       });
     var noaa_enc = L.tileLayer.wms(
       "https://gis.charttools.noaa.gov/arcgis/rest/services/MCS/NOAAChartDisplay/MapServer/exts/MaritimeChartService/WMSServer",
@@ -23,14 +24,29 @@
         maxZoom: 19,
         attribution: 'NOAA'
       });
+    // Sonar image overlays
+    var imageUrl_hs = "{% static 'combined_depth_4000x4000_numhits5_hillshade_1.png' %}";
+    var imageUrl_color = "{% static 'combined_depth_4000x4000_numhits5_2.png' %}";
+    var imageBounds = [[41.4300632, -71.4547447], [41.6728435, -71.2838381]];
+    var fs_overlay_color = L.imageOverlay(imageUrl_color, imageBounds);
+    var fs_overlay_relief = L.imageOverlay(imageUrl_hs, imageBounds);
+    var fs_layer = L.layerGroup([fs_overlay_relief, fs_overlay_color]);
+    // The map!
     const map = L.map(
       'map',
       {'center': [41.47, -71.35],
-       'zoom':  12,
-       'layers': [ocean_base, noaa_enc]});
+       'zoom':  19,
+       'layers': [ocean_base]});
+    // Legend and entries
     var layerControl = L.control.layers(
-      {"ESRI Ocean Base" : ocean_base, "NOAA ENC": noaa_enc}, {}).addTo(map);
+      {"ESRI Ocean Base" : ocean_base, "NOAA ENC": noaa_enc}, // basemaps
+      {"FarSounder Gridded Bathymetry" : fs_layer} // overlays
+      ).addTo(map);
   </script>
+  <!--
+    Here's the fun part - adding all the wreck markers we passed in from
+       the view handler.
+  -->
   {% if wrecks_list %}
       {% for wreck in wrecks_list %}
           <script>
