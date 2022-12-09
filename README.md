@@ -1,5 +1,5 @@
 # Shipwrecks
-A simple single page app to display shipwrecks locations in the New England area
+A simple single page app to display shipwrecks location in the New England area
 
 ## Data
 The wreck data in the map was pulled from various sources on the web, the Beaver Tail Lighthouse Museum has a comprehensive database of wrecks, some with locations, at their [site](https://beavertaillight.org/wrecks/). Please refer to their site for more detailed information about a specific wreck, and be sure to check with them regarding how the data is allowed to be reproduced.
