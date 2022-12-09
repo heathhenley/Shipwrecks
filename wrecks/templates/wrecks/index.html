@@ -42,9 +42,9 @@
        'layers': [ocean_base]});
     // Legend and entries
     var layerControl = L.control.layers(
-      {"ESRI Ocean Base" : ocean_base, "NOAA ENC": noaa_enc}, // basemaps
-      {"<a href='https://www.farsounder.com' >FarSounder</a> Gridded Bathymetry" : fs_layer} // overlays
-      ).addTo(map);
+      {"ESRI Ocean Base" : ocean_base, "NOAA Nautical Chart": noaa_enc}, // basemaps
+      {"<a href='https://www.farsounder.com' >FarSounder</a> FLS Gridded Bathymetry" : fs_layer}, // overlays
+      {"collapsed": false}).addTo(map);
   </script>
   <!--
     Here's the fun part - adding all the wreck markers we passed in from
