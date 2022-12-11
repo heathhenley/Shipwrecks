@@ -15,7 +15,9 @@ def ll_to_decimal(ll_str):
   secs = secs[:-1]
   return sign * (float(ll) + float(mins) / 60 + float(secs) / 3600)
 
-def generate_wreck_dict_from_file():
+# This generates a list of wrecks in the json file that contain a lat / lon
+# string that matches the regex format above in their "location" field
+def wrecks_with_loc_dict_from_file():
   data = None
   wreck_dict = {}
   with open(filename) as f:
@@ -32,9 +34,26 @@ def generate_wreck_dict_from_file():
           wreck_dict[name] = (year, lat, lon, wds)
   return wreck_dict
 
+# read all wrecks in - just looking to update wds here not location - used by
+# the update add wds function below
+def all_wrecks_dict_from_file():
+  data = None
+  wreck_dict = {}
+  with open(filename) as f:
+    data = json.load(f)
+    wrecks = data["data"]
+    for wreck in wrecks:
+        name, year = wreck["vname"], wreck["ylost"]
+        wds = f"{URL}/r{wreck['region']}/{wreck['datasheet'].replace(' ', '%20')}"
+        if name not in wreck_dict:
+          wreck_dict[name] = (year, None, None, wds)
+  return wreck_dict
+
 # insert / update in django model
-def insert_update(wrecks_model):
-  for name, (year, lat, lon, wds) in generate_wreck_dict_from_file().items():
+# this is just a helper to update / insert all the wrecks that had locations in
+# the json data
+def insert_update_all_fields(wrecks_model):
+  for name, (year, lat, lon, wds) in wrecks_with_loc_dict_from_file().items():
     obj, created = (wrecks_model.objects
                       .filter(vessel_name__iexact=name)
                       .update_or_create(
@@ -46,6 +65,34 @@ def insert_update(wrecks_model):
                       ))
     print(created)
     print(obj)
+
+def update_add_wds(wrecks_model):
+  update_counter = 0
+  for name, (year, _, _, wds) in all_wrecks_dict_from_file().items():
+    try:
+      wreck = wrecks_model.objects.get(vessel_name__iexact=name)
+      print(f"{name} in db already...")
+      if wreck.beavertail_link == '':
+        print(f"wds empty, update with: {wds}")
+        update_counter += 1
+        wreck.beavertail_link = wds
+        wreck.save()
+    except:
+      print(f"{name} not in db")
+  print(f"Updated: {update_counter} records.")
+
+def update_add_wreckhunter_link(wrecks_model):
+  update_counter = 0
+  wrecks = wrecks_model.objects.all()
+  for wreck in wrecks:
+    if wreck.wreckhunter_link == '':
+      print(f"Wreck{wreck.name} has no wreckhunter link - attempt to update...")
+      name = str(wreck.name).lower().replace(' ', '-')
+      path = f"wreckhunter.net/DataPages/{name}-dat.htm"
+      print(path)
+      # Try link:
+      # if good, update record
+  print(f"Updated: {update_counter} records.")
 
 
 
