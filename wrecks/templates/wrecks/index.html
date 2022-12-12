@@ -54,33 +54,21 @@
         maxZoom: 16,
         attribution: 'NOAA NCEI'
       });
-    // The map!
-    const map = L.map(
-      'map',
-      {'center': [41.47, -71.35],
-       'zoom':  12,
-       'layers': [ocean_base]});
-    // Legend and entries
-    var layerControl = L.control.layers(
-      // base maps
-      {"ESRI Ocean Base" : ocean_base,
-       "NOAA Nautical Chart": noaa_enc},
-      // overlays
-      {"<a href='https://www.farsounder.com' >FarSounder</a> FLS Gridded Bathymetry" : fs_layer,
-      "<a href='https://www.ncei.noaa.gov/maps/bathymetry/'>NOAA</a> Shaded Bathymetry BAG" : noaa_bag},
-      // options
-      {"collapsed": false}).addTo(map);
+    // The map is set up below so we can easily default the wreck markers to on
   </script>
   <!--
     Here's the fun part - adding all the wreck markers we passed in from
        the view handler.
   -->
+  <script>
+    var wreck_markers = [];
+  </script>
   {% if wrecks_list %}
       {% for wreck in wrecks_list %}
           <script>
             var marker = L.marker(
               ["{{ wreck.latitude }}", "{{ wreck.longitude }}"]
-              ).addTo(map);
+              );
             var wh_link = "{% if wreck.wreckhunter_link %}<a href={{ wreck.wreckhunter_link }} target=\"_blank\" rel=\"noopener noreferrer\" >Datasheet</a>{% else %}{% endif %}";
             var bl_link = "{% if wreck.beavertail_link %}<a href={{ wreck.beavertail_link }} target=\"_blank\" rel=\"noopener noreferrer\" >Datasheet</a>{% else %}{% endif %}";
             var name = "<strong>{{ wreck.vessel_name }}</strong>";
@@ -103,9 +91,31 @@
               msg_box += "<br>There are no datasheets or references available for this wreck...yet :) .</br>"
             }
             marker.bindPopup(msg_box, {'maxWidth' : 375});
+            wreck_markers.push(marker);
           </script>
       {% endfor %}
   {% else %}
       <p>No wrecks in are available.</p>
   {% endif %}
+  <script>
+    var wreck_group = L.layerGroup(wreck_markers);
+    // The map!
+    const map = L.map(
+      'map',
+      {'center': [41.47, -71.35],
+      'zoom':  12,
+      'layers': [ocean_base, wreck_group]});
+    
+    // Legend and entries
+    var layerControl = L.control.layers(
+      // base maps
+      {"ESRI Ocean Base" : ocean_base,
+      "NOAA Nautical Chart": noaa_enc},
+      // overlays
+      {"<a href='https://www.farsounder.com' >FarSounder</a> FLS Gridded Bathymetry" : fs_layer,
+      "<a href='https://www.ncei.noaa.gov/maps/bathymetry/'>NOAA</a> Shaded Bathymetry BAG" : noaa_bag,
+      "Shipwrecks" : wreck_group},
+      // options
+      {"collapsed": false}).addTo(map);
+  </script>
 </body>
