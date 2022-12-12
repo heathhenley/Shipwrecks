@@ -20,6 +20,16 @@
     gtag('js', new Date());
     gtag('config', 'G-MK6MY7ZT9H');
   </script>
+  <style>
+    body {
+      padding: 0;
+      margin: 0;
+    }
+    html, body, #map {
+        height: 100%;
+        width: 100vw;
+    }
+  </style>
 </head>
 
 <body>
@@ -54,15 +64,14 @@
         maxZoom: 16,
         attribution: 'NOAA NCEI'
       });
-    // The map is set up below so we can easily default the wreck markers to on
+    // NOTE the map is up below so we can easily default on the markers.
+    // This stores the markers so we can make a group and toggle them together.
+    var wreck_markers = [];
   </script>
   <!--
     Here's the fun part - adding all the wreck markers we passed in from
        the view handler.
   -->
-  <script>
-    var wreck_markers = [];
-  </script>
   {% if wrecks_list %}
       {% for wreck in wrecks_list %}
           <script>
