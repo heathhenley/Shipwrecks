@@ -76,7 +76,8 @@
       {% for wreck in wrecks_list %}
           <script>
             var marker = L.marker(
-              ["{{ wreck.latitude }}", "{{ wreck.longitude }}"]
+              ["{{ wreck.latitude }}", "{{ wreck.longitude }}"],
+              {title : "{{ wreck.vessel_name }}"}
               );
             var wh_link = "{% if wreck.wreckhunter_link %}<a href={{ wreck.wreckhunter_link }} target=\"_blank\" rel=\"noopener noreferrer\" >Datasheet</a>{% else %}{% endif %}";
             var bl_link = "{% if wreck.beavertail_link %}<a href={{ wreck.beavertail_link }} target=\"_blank\" rel=\"noopener noreferrer\" >Datasheet</a>{% else %}{% endif %}";
