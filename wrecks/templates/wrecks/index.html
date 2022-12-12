@@ -102,7 +102,7 @@
             } else {
               msg_box += "<br>There are no datasheets or references available for this wreck...yet :) .</br>"
             }
-            marker.bindPopup(msg_box);
+            marker.bindPopup(msg_box, {'maxWidth' : 375});
           </script>
       {% endfor %}
   {% else %}
