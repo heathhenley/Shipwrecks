@@ -87,7 +87,8 @@ def update_add_wreckhunter_link(wrecks_model):
   wrecks = wrecks_model.objects.all()
   for wreck in wrecks:
     if wreck.wreckhunter_link == '':
-      name = str(wreck.vessel_name).lower().replace(' ', '')
+      name = (str(wreck.vessel_name).lower().replace(' ', '')
+              .replace('.', '').replace('uss', ''))
       path = f"http://wreckhunter.net/DataPages/{name}-dat.htm"
       res = requests.get(path)
       #print(res.status_code)
