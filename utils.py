@@ -100,7 +100,12 @@ def update_add_wreckhunter_link(wrecks_model):
         update_counter += 1
   print(f"Updated: {update_counter} records.")
 
-
+def fix_wreckhunter_links(wreck_model):
+  for wreck in wreck_model.objects.all():
+    if wreck.wreckhunter_link != "":
+      new_link = str(wreck.wreckhunter_link).replace('http:', 'https:')
+      wreck.wreckhunter_link = new_link
+      wreck.save()
 
 if __name__ == "__main__":
   for name, info in generate_wreck_dict_from_file().items():
