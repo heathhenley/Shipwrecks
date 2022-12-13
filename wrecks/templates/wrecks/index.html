@@ -48,13 +48,14 @@
   <script>
     // Event handler to open modal / iframe for datasheet
     function openModal(elem) {
-      // TODO (Heath): Does event.target work in all modern browsers?
+      // TODO (Heath): Does event.target.dataset work in all modern browsers?
       document.getElementById("popupdarkbg").style.display = "block";
       document.getElementById("popup").style.display = "block";
-      document.getElementById('popupiframe').src = event.target.id;
+      document.getElementById('popupiframe').src = event.target.dataset["url"];
       document.getElementById('popupdarkbg').onclick = function() {
         document.getElementById("popup").style.display = "none";
         document.getElementById("popupdarkbg").style.display = "none";
+        document.getElementById('popupiframe').src = "";
       };
       return false;
     }
@@ -119,8 +120,8 @@
               ["{{ wreck.latitude }}", "{{ wreck.longitude }}"],
               {title : "{{ wreck.vessel_name }}"}
             );
-            var wh_link = "{% if wreck.wreckhunter_link %}<a href='#' id={{ wreck.wreckhunter_link }} onClick='openModal();'>Datasheet</a>{% else %}{% endif %}";
-            var bl_link = "{% if wreck.beavertail_link %}<a href='#' id={{ wreck.beavertail_link }} onClick='openModal()';>Datasheet</a>{% else %}{% endif %}";
+            var wh_link = "{% if wreck.wreckhunter_link %}<a href='#' data-url={{ wreck.wreckhunter_link }} onClick='openModal();'>Datasheet</a>{% else %}{% endif %}";
+            var bl_link = "{% if wreck.beavertail_link %}<a href='#' data-url={{ wreck.beavertail_link }} onClick='openModal()';>Datasheet</a>{% else %}{% endif %}";
             var name = "<strong>{{ wreck.vessel_name }}</strong>";
             var year =  "{% if wreck.year > 0 %}{{wreck.year}}{%endif%}";
             var msg_box = name;
