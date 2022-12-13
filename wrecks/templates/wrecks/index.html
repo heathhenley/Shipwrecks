@@ -12,6 +12,23 @@
     content="An interactive map showing the locations of shipwrecks in the New England area, and some additional data layers."/>
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <style>
+    #popup {
+      display: none;
+      position: fixed; top: 12%; left: 15%; width: 70%; height: 70%; background-color: white;
+      z-index: 10000;
+    }
+    #popup iframe {
+      width: 100%; height: 100%; border: 0;
+    }
+    #popupdarkbg {
+      position: fixed; z-index: 9000;
+      left: 0; top: 0; width: 100%; height: 100%;
+      overflow: hidden;
+      background-color: rgba(0,0,0,.75);
+      display: none;
+    }
+  </style>
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-MK6MY7ZT9H"></script>
   <script>
@@ -19,6 +36,28 @@
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
     gtag('config', 'G-MK6MY7ZT9H');
+  </script>
+  <script>
+    // Event handler to open modal / iframe for datasheet
+    function openModal(elem) {
+      // TODO (Heath): Does event.target work in all modern browsers?
+      document.getElementById("popupdarkbg").style.display = "block";
+      document.getElementById("popup").style.display = "block";
+      document.getElementById('popupiframe').src = event.target.id;
+      document.getElementById('popupdarkbg').onclick = function() {
+        document.getElementById("popup").style.display = "none";
+        document.getElementById("popupdarkbg").style.display = "none";
+      };
+      return false;
+    }
+    window.onkeydown = function(e) {
+      if (e.keyCode == 27) {
+        document.getElementById("popup").style.display = "none";
+        document.getElementById("popupdarkbg").style.display = "none";
+        e.preventDefault();
+        return;
+      }
+    }
   </script>
   <style>
     body {
@@ -33,6 +72,8 @@
 </head>
 
 <body>
+  <div id="popup"><iframe id="popupiframe"></iframe></div>
+  <div id="popupdarkbg"></div>
   <a class="github-fork-ribbon left-bottom" href="https://github.com/heathhenley/Shipwrecks" data-ribbon="Help with this app!" title="Contribute on GitHub!">Contribute on GitHub!</a>
   <style>.github-fork-ribbon:before { background-color: #333; }</style>
   <div id="map" style="height: 100%; width: 100%;"></div>
@@ -75,12 +116,13 @@
   {% if wrecks_list %}
       {% for wreck in wrecks_list %}
           <script>
+            // TODO: Refactor this it's getting really messy
             var marker = L.marker(
               ["{{ wreck.latitude }}", "{{ wreck.longitude }}"],
               {title : "{{ wreck.vessel_name }}"}
-              );
-            var wh_link = "{% if wreck.wreckhunter_link %}<a href={{ wreck.wreckhunter_link }} target=\"_blank\" rel=\"noopener noreferrer\" >Datasheet</a>{% else %}{% endif %}";
-            var bl_link = "{% if wreck.beavertail_link %}<a href={{ wreck.beavertail_link }} target=\"_blank\" rel=\"noopener noreferrer\" >Datasheet</a>{% else %}{% endif %}";
+            );
+            var wh_link = "{% if wreck.wreckhunter_link %}<a href='#' id={{ wreck.wreckhunter_link }} onClick='openModal();'>Datasheet</a>{% else %}{% endif %}";
+            var bl_link = "{% if wreck.beavertail_link %}<a href='#' id={{ wreck.beavertail_link }} onClick='openModal()';>Datasheet</a>{% else %}{% endif %}";
             var name = "<strong>{{ wreck.vessel_name }}</strong>";
             var year =  "{% if wreck.year > 0 %}{{wreck.year}}{%endif%}";
             var msg_box = name;
