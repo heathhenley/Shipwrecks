@@ -81,7 +81,8 @@
       'https://server.arcgisonline.com/ArcGIS/rest/services/Ocean_Basemap/MapServer/tile/{z}/{y}/{x}',
       {
 	      attribution: 'Tiles &copy; Esri &mdash; Sources: GEBCO, NOAA, CHS, OSU,   UNH, CSUMB, National Geographic, DeLorme, NAVTEQ, and Esri',
-	      maxZoom: 16
+        maxNativeZoom: 16,
+        maxZoom: 19,
       });
     var noaa_enc = L.tileLayer.wms(
       "https://gis.charttools.noaa.gov/arcgis/rest/services/MCS/NOAAChartDisplay/MapServer/exts/MaritimeChartService/WMSServer",
@@ -101,7 +102,8 @@
     var noaa_bag = L.tileLayer(
       "https://tiles.arcgis.com/tiles/C8EMgrsFcRFL6LrL/arcgis/rest/services/bag_hillshades/MapServer/WMTS/tile/1.0.0/bag_hillshades/default/default028mm/{z}/{y}/{x}",
       {
-        maxZoom: 16,
+        maxNativeZoom: 15,
+        maxZoom: 19,
         attribution: 'NOAA NCEI'
       });
     // NOTE the map is up below so we can easily default on the markers.
