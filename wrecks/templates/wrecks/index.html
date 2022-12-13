@@ -119,7 +119,7 @@
               ["{{ wreck.latitude }}", "{{ wreck.longitude }}"],
               {title : "{{ wreck.vessel_name }}"}
             );
-            var wh_link = "{% if wreck.wreckhunter_link %}<a href='#' id={{ wreck.wreckhunter_link }} onClick='openModal();'>Datasheet</a>{% else %}{% endif %}";
+            var wh_link = "{% if wreck.wreckhunter_link %}<a href={{ wreck.wreckhunter_link }} target=\"_blank\" rel=\"noopener noreferrer\" >Datasheet</a>{% else %}{% endif %}";
             var bl_link = "{% if wreck.beavertail_link %}<a href='#' id={{ wreck.beavertail_link }} onClick='openModal()';>Datasheet</a>{% else %}{% endif %}";
             var name = "<strong>{{ wreck.vessel_name }}</strong>";
             var year =  "{% if wreck.year > 0 %}{{wreck.year}}{%endif%}";
