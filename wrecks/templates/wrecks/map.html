@@ -1,5 +1,10 @@
 {% load static %}
+<script src="{% static 'map_utils.js' %}"></script>
+
+{{ wrecks_list | json_script:"wrecks_list" }}
+
 <script>
+  // Add map base and overlay layers
   var ocean_base = L.tileLayer(
     'https://server.arcgisonline.com/ArcGIS/rest/services/Ocean_Basemap/MapServer/tile/{z}/{y}/{x}',
     {
@@ -29,57 +34,27 @@
       maxZoom: 19,
       attribution: 'NOAA NCEI'
     });
-  // NOTE the map is up below so we can easily default on the markers.
-  // This stores the markers so we can make a group and toggle them together.
+
+  // Parse JSON into js array of wrecks
+  var wrecks_list = JSON.parse(
+  document.getElementById('wrecks_list').textContent);
   var wreck_markers = [];
-</script>
-<!--
-  Here's the fun part - adding all the wreck markers we passed in from
-     the view handler.
--->
-{% if wrecks_list %}
-    {% for wreck in wrecks_list %}
-        <script>
-          // TODO: Refactor this it's getting really messy
-          var marker = L.marker(
-            ["{{ wreck.latitude }}", "{{ wreck.longitude }}"],
-            {title : "{{ wreck.vessel_name }}"}
-          );
-          var wh_link = "{% if wreck.wreckhunter_link %}<a href='{{ wreck.wreckhunter_link }}' onClick='openModal();'>Datasheet</a>{% else %}{% endif %}";
-          var bl_link = "{% if wreck.beavertail_link %}<a href='{{ wreck.beavertail_link }}' onClick='openModal()';>Datasheet</a>{% else %}{% endif %}";
-          var name = "<strong>{{ wreck.vessel_name }}</strong>";
-          var year =  "{% if wreck.year > 0 %}{{wreck.year}}{%endif%}";
-          var msg_box = name;
-          if (year !== "") {
-            msg_box += "<br>Year Lost: " + year + "</br>";
-          }
-          if (wh_link.length > 0 || bl_link.length > 0) {
-            msg_box += "<br>There is more information available at the following resources. Note: all data at the following links is from external sources, please refer to the linked sources for usage or reproduction constraints.</br>";
-            msg_box += "<ul>";
-            if (wh_link.length > 0) {
-              msg_box += "<li>Wreck Hunter (<a href='http://wreckhunter.net/' target=\"_blank\" rel=\"noopener noreferrer\">Website</a>, " + wh_link + ")</li>"; 
-            }
-            if (bl_link.length > 0) {
-              msg_box += "<li>Beavertail Lighthouse Museum (<a href='https://beavertaillight.org/wrecks/' target=\"_blank\" rel=\"noopener noreferrer\">Website</a>, " + bl_link + ")</li>";
-            }
-            msg_box += "</ul>";
-          } else {
-            msg_box += "<br>There are no datasheets or references available for this wreck...yet :) .</br>"
-          }
-          marker.bindPopup(msg_box, {'maxWidth' : 375});
-          wreck_markers.push(marker);
-        </script>
-    {% endfor %}
-{% endif %}
-<script>
+  for (key in wrecks_list) {
+    var wreck = wrecks_list[key]
+    var marker = L.marker([wreck['latitude'], wreck['longitude'],
+                          {title: wreck['vessel_name']}]);
+    marker.bindPopup(make_popup(wreck), {'maxWidth' : 375});
+    wreck_markers.push(marker);
+  }
   var wreck_group = L.layerGroup(wreck_markers);
+
   // The map!
   const map = L.map(
     'map',
     {'center': [41.47, -71.35],
     'zoom':  12,
     'layers': [ocean_base, wreck_group]});
-  
+
   // Legend and entries
   var layerControl = L.control.layers(
     // base maps
