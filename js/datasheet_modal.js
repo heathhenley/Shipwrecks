@@ -1,6 +1,7 @@
     // Event handler to open modal / iframe for datasheet
-    function openModal(elem) {
-      // TODO (Heath): Does event.target.dataset work in all modern browsers?
+    function openModal() {
+      // TODO (Heath): This is using the global window event, so should add
+      // a listener that takes a param to the link tags instead
       document.getElementById("popupdarkbg").style.display = "block";
       document.getElementById("popup").style.display = "block";
       document.getElementById('popupiframe').src = event.target.dataset["url"];
